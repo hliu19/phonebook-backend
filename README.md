@@ -1,2 +1,2 @@
 # phonebook-backend
-An exercise for practicing retrieving data from a server. 
+A simple backend server for a phonebook application.
