@@ -1,5 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
+const Person = require('./models/person')
 
 const app = express()
 
@@ -41,18 +42,15 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(person => person.id === id)
-
-    if (person) {
+    Person.findById(request.params.id).then(person => {
         response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -64,7 +62,6 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
-    console.log("Request received")
 
     // Check if POST request is missing name and/or number
     if (!body.name || !body.number) {
@@ -78,30 +75,21 @@ app.post('/api/persons', (request, response) => {
         return persons.some(person => person.name.toLowerCase() === name.toLowerCase())
     }
 
-    console.log(Boolean(containsPerson))
-
     if (containsPerson(body.name)) {
         response.status(400).json({
             error: "Person already exists"
         })
     }
     else {
-        const newPerson = {
-            id: generateId(),
+        const newPerson = new Person({
             name: body.name,
-            number: body.number
-        }
-    
-        persons = persons.concat(newPerson)
-        response.json(newPerson)
-        console.log(newPerson)
+            number: body.number,
+        })
+        newPerson.save().then(savedPerson => {
+            response.json(savedPerson)
+        })
     }
 })
-
-const generateId = () => {
-    const maxId = persons.length > 0 ? Math.max(...persons.map(n => Number(n.id))) : 0
-    return String(maxId + 1)
-}
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
