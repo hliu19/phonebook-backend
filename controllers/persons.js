@@ -3,8 +3,8 @@ const Person = require('../models/person')
 
 // Get all entries
 personsRouter.get('/', (request, response) => {
-  Person.find({}).then(notes => {
-    response.json(notes)
+  Person.find({}).then(person => {
+    response.json(person)
   })
 })
 
