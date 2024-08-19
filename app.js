@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const personsRouter = require('./controllers/persons')
-const middleware = require('./utils/logger')
+const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
 
@@ -22,7 +22,7 @@ app.use(express.static('dist'))
 app.use(express.json())
 app.use(middleware.requestLogger)
 app.use('api/persons', personsRouter)
-app.use(middleware.unknownEndpoints)
+app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 
 module.exports = app
