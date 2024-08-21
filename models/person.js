@@ -7,6 +7,10 @@ const personSchema = new mongoose.Schema({
     minLength: 3
   },
   number: String,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 })
 
 // Format the json object send to the db. deletes the __v field.
